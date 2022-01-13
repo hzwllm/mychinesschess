@@ -8,7 +8,11 @@ const {
 exports.com = function (app) {
     for (let i = 0; i < transrou.length; i++) {
         try {
-            let iphost = transrou[i].proxy + '://' + transrou[i].ip + ':' + transrou[i].host
+            let iphost = transrou[i].proxy + '://' + transrou[i].ip 
+            console.log(iphost)
+            if(transrou[i].host){
+                iphost+=':'+transrou[i].host
+            }
             app.use(transrou[i].route, createProxyMiddleware({
                 // 代理跨域目标接口
                 target: iphost,
@@ -18,6 +22,8 @@ exports.com = function (app) {
                 onProxyRes: function (proxyRes, req, res) {
                     res.header('Access-Control-Allow-Origin', iphost);
                     res.header('Access-Control-Allow-Credentials', 'true');
+                    res.header('Access-Control-Allow-Methods', '*');
+                    res.header('Content-Type', 'application/json;charset=utf-8');
                 },
 
                 // 修改响应信息中的cookie域名

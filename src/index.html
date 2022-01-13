@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id='app'>
+        <!-- i1 y,i2 x -->
+        <div v-for='(item,i1) in map' style="height:60px;margin-top:20px;display: flex;justify-content: space-around;width:750px">
+            <div v-for='(item2,i2) in item' style="height:60px;background-color:rgb(204, 204, 238);width: 60px;line-height: 60px;text-align: center;" @dblclick='getmove(item2)' @click='move(i1,i2)'>{{item2.chessr?item2.chessr.name+item2.chessr.chess.type:''}}</div>
+        </div>
+        <div @click='changetype'> 点击切换回合{{mymarp.serversocket.type}}</div>
+    </div>
+    <script type="module">
+        import  {mymap} from './mychesse.js'
+        var app = new Vue({
+            el: '#app',
+                data() {
+                    return{
+                        message: 'Hello Vue!',
+                        // 棋盘
+                        mymap:mymap.chessmap,
+                        // 新玩法
+                        mymarp:mymap,
+                        // 棋盘
+                        map:mymap.chessmap.map,
+                        currentchess:null,
+                        // 初始type，用来测试
+                        type:1
+                    }
+                
+                },
+                methods:{
+                    changetype(){
+                        this.type=0-this.type
+                    },
+                    getmove(e){
+                        this.currentchess=this.mymarp.selectchess(this.mymarp.serversocket.type,e.chessr.chess.x,e.chessr.chess.y)
+                        // console.log(e)
+                    },
+                    move(y,x){
+                        if(this.currentchess){
+                            // 棋盘的特殊性决定，起始坐标是1，数组是0
+                            this.mymarp.move(this.currentchess.chessr.chess,x-this.currentchess.chessr.chess.x+1,y-this.currentchess.chessr.chess.y+1)
+                        }
+                        this.currentchess=null
+                    }
+                },
+                mounted(){
+                    console.log(this.mymarp.serversocket.type)
+                }
+            })
+        console.log(mymap)
+    </script>
+</body>
+
+</html>
